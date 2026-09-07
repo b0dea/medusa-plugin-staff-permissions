@@ -24,3 +24,8 @@ build
 !.yarn/versions
 
 .medusa
+
+*.tgz
+lab/node_modules
+lab/staff-owner-id
+lab/*.log

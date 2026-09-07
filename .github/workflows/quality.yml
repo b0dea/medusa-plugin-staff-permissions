@@ -26,5 +26,44 @@ jobs:
   lab:
     needs: quality
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: staff_permissions_lab
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d staff_permissions_lab"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/staff_permissions_lab
+      JWT_SECRET: staff-local-fixture
+      COOKIE_SECRET: staff-local-fixture
+      STAFF_ACCESS_FIXTURE_PROOF: "true"
+      STAFF_ACCESS_HTTP_BASE: http://localhost:9015
+      PORT: "9015"
+      NODE_ENV: development
     steps:
-      - run: echo "lab job stub; Task 9 fills this in"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            lab/package-lock.json
+      - name: Pack plugin
+        run: npm ci && npm run build && npm pack
+      - name: Install lab
+        working-directory: lab
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm ci
+      - name: Migrate, PostgreSQL proof, HTTP proof, inventory check
+        working-directory: lab
+        run: bash run-lab.sh
