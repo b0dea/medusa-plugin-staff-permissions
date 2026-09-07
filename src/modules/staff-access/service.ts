@@ -8,6 +8,7 @@ import {
 } from "@medusajs/framework/utils"
 import StaffAccess from "./models/staff-access"
 import StaffAccessAudit from "./models/staff-access-audit"
+import { createPolicy, type StaffPolicy } from "../../lib/policy"
 import { resolveOptions } from "./options"
 import type { ResolvedStaffPermissionsOptions, StaffPermissionsOptions } from "./options"
 import type { StaffAccessSnapshot, UpdateStaffAccessInput } from "./types"
@@ -15,6 +16,7 @@ import { decodeStaffPermissions } from "./types"
 
 class StaffAccessModuleService extends MedusaService({ StaffAccess, StaffAccessAudit }) {
   protected options_: ResolvedStaffPermissionsOptions
+  protected policy_?: StaffPolicy
 
   constructor(container: Record<string, unknown>, options?: StaffPermissionsOptions) {
     super(...arguments)
@@ -28,6 +30,10 @@ class StaffAccessModuleService extends MedusaService({ StaffAccess, StaffAccessA
 
   isOwner(userId: string): boolean {
     return !!userId && this.options_.owner_user_ids.includes(userId)
+  }
+
+  getPolicy(): StaffPolicy {
+    return this.policy_ ??= createPolicy(this.options_)
   }
   /* eslint-enable @medusajs/service-methods-must-be-async */
 
