@@ -1,0 +1,730 @@
+{
+  "/admin/api-keys": {},
+  "/admin/api-keys/[id]": {},
+  "/admin/api-keys/[id]/revoke": {},
+  "/admin/api-keys/[id]/sales-channels": {},
+  "/admin/campaigns": {
+    "GET": "marketing.read",
+    "POST": "marketing.manage"
+  },
+  "/admin/campaigns/[id]": {
+    "GET": "marketing.read",
+    "POST": "marketing.manage",
+    "DELETE": "marketing.manage"
+  },
+  "/admin/campaigns/[id]/promotions": {
+    "POST": "marketing.manage"
+  },
+  "/admin/claims": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]": {
+    "GET": "orders.read"
+  },
+  "/admin/claims/[id]/cancel": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/claim-items": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/claim-items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/claims/[id]/inbound/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/inbound/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/claims/[id]/inbound/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/inbound/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/claims/[id]/outbound/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/outbound/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/claims/[id]/outbound/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/claims/[id]/outbound/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/claims/[id]/request": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/collections": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/collections/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/collections/[id]/products": {
+    "POST": "catalog.manage"
+  },
+  "/admin/currencies": {
+    "GET": "reference"
+  },
+  "/admin/currencies/[code]": {
+    "GET": "reference"
+  },
+  "/admin/customer-groups": {
+    "GET": "customers.read",
+    "POST": "customers.manage"
+  },
+  "/admin/customer-groups/[id]": {
+    "GET": "customers.read",
+    "POST": "customers.manage",
+    "DELETE": "customers.manage"
+  },
+  "/admin/customer-groups/[id]/customers": {
+    "POST": "customers.manage"
+  },
+  "/admin/customers": {
+    "GET": "customers.read",
+    "POST": "customers.manage"
+  },
+  "/admin/customers/[id]": {
+    "GET": "customers.read",
+    "POST": "customers.manage",
+    "DELETE": "customers.manage"
+  },
+  "/admin/customers/[id]/addresses": {
+    "GET": "customers.read",
+    "POST": "customers.manage"
+  },
+  "/admin/customers/[id]/addresses/[address_id]": {
+    "GET": "customers.read",
+    "POST": "customers.manage",
+    "DELETE": "customers.manage"
+  },
+  "/admin/customers/[id]/customer-groups": {
+    "POST": "customers.manage"
+  },
+  "/admin/draft-orders": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]": {
+    "GET": "orders.read",
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/convert-to-order": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/confirm": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/items/item/[item_id]": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/promotions": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/request": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/shipping-methods": {
+    "POST": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/shipping-methods/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/draft-orders/[id]/edit/shipping-methods/method/[method_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/exchanges": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]": {
+    "GET": "orders.read"
+  },
+  "/admin/exchanges/[id]/cancel": {
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]/inbound/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]/inbound/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/exchanges/[id]/inbound/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]/inbound/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/exchanges/[id]/outbound/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]/outbound/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/exchanges/[id]/outbound/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/exchanges/[id]/outbound/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/exchanges/[id]/request": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/feature-flags": {},
+  "/admin/fulfillment-providers": {
+    "GET": "reference"
+  },
+  "/admin/fulfillment-providers/[id]/options": {
+    "GET": "reference"
+  },
+  "/admin/fulfillment-sets/[id]": {},
+  "/admin/fulfillment-sets/[id]/service-zones": {},
+  "/admin/fulfillment-sets/[id]/service-zones/[zone_id]": {
+    "GET": "reference"
+  },
+  "/admin/fulfillments": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/fulfillments/[id]/cancel": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/fulfillments/[id]/shipment": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/index/details": {},
+  "/admin/index/sync": {},
+  "/admin/inventory-items": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage"
+  },
+  "/admin/inventory-items/[id]": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage",
+    "DELETE": "inventory.manage"
+  },
+  "/admin/inventory-items/[id]/location-levels": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage"
+  },
+  "/admin/inventory-items/[id]/location-levels/[location_id]": {
+    "POST": "inventory.manage",
+    "DELETE": "inventory.manage"
+  },
+  "/admin/inventory-items/[id]/location-levels/batch": {
+    "POST": "inventory.manage"
+  },
+  "/admin/inventory-items/export": {
+    "POST": "inventory.manage"
+  },
+  "/admin/inventory-items/location-levels/batch": {
+    "POST": "inventory.manage"
+  },
+  "/admin/invites": {},
+  "/admin/invites/[id]": {},
+  "/admin/invites/[id]/resend": {},
+  "/admin/invites/accept": {},
+  "/admin/layouts/[zone]/configuration": {},
+  "/admin/layouts/configurations": {},
+  "/admin/locales": {
+    "GET": "reference"
+  },
+  "/admin/locales/[code]": {
+    "GET": "reference"
+  },
+  "/admin/notifications": {},
+  "/admin/notifications/[id]": {},
+  "/admin/order-changes/[id]": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]": {
+    "DELETE": "orders.manage"
+  },
+  "/admin/order-edits/[id]/confirm": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]/items": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]/items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/order-edits/[id]/items/item/[item_id]": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]/request": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/order-edits/[id]/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/orders": {
+    "GET": "orders.read"
+  },
+  "/admin/orders/[id]": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/archive": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/cancel": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/changes": {
+    "GET": "orders.read"
+  },
+  "/admin/orders/[id]/complete": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/credit-lines": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/fulfillments": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/orders/[id]/fulfillments/[fulfillment_id]/cancel": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/orders/[id]/fulfillments/[fulfillment_id]/mark-as-delivered": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/orders/[id]/fulfillments/[fulfillment_id]/shipments": {
+    "POST": "fulfillment.manage"
+  },
+  "/admin/orders/[id]/line-items": {
+    "GET": "orders.read"
+  },
+  "/admin/orders/[id]/payment-sessions/authorize": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/preview": {
+    "GET": "orders.read"
+  },
+  "/admin/orders/[id]/shipping-options": {
+    "GET": "orders.read"
+  },
+  "/admin/orders/[id]/transfer": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/transfer/cancel": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/[id]/transfer/guest": {
+    "POST": "orders.manage"
+  },
+  "/admin/orders/export": {
+    "POST": "orders.manage"
+  },
+  "/admin/payment-collections": {
+    "POST": "orders.manage"
+  },
+  "/admin/payment-collections/[id]": {
+    "DELETE": "orders.manage"
+  },
+  "/admin/payment-collections/[id]/mark-as-paid": {
+    "POST": "orders.manage"
+  },
+  "/admin/payment-collections/[id]/payment-sessions": {
+    "POST": "orders.manage"
+  },
+  "/admin/payments": {
+    "GET": "orders.read"
+  },
+  "/admin/payments/[id]": {
+    "GET": "orders.read"
+  },
+  "/admin/payments/[id]/capture": {
+    "POST": "orders.manage"
+  },
+  "/admin/payments/[id]/refund": {
+    "POST": "orders.manage"
+  },
+  "/admin/payments/payment-providers": {
+    "GET": "orders.read"
+  },
+  "/admin/plugins": {},
+  "/admin/price-lists": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/price-lists/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/price-lists/[id]/prices": {
+    "GET": "catalog.read"
+  },
+  "/admin/price-lists/[id]/prices/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/price-lists/[id]/products": {
+    "POST": "catalog.manage"
+  },
+  "/admin/price-preferences": {
+    "GET": "reference"
+  },
+  "/admin/price-preferences/[id]": {
+    "GET": "reference"
+  },
+  "/admin/product-categories": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/product-categories/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/product-categories/[id]/products": {
+    "POST": "catalog.manage"
+  },
+  "/admin/product-options": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/product-options/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/product-options/[id]/values": {
+    "GET": "catalog.read"
+  },
+  "/admin/product-options/[id]/values/[value_id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/product-tags": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/product-tags/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/product-types": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/product-types/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/product-variants": {
+    "GET": "catalog.read"
+  },
+  "/admin/products": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/products/[id]/images/[image_id]/variants/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/options": {
+    "GET": "catalog.read"
+  },
+  "/admin/products/[id]/options/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/variants": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/[variant_id]": {
+    "GET": "catalog.read",
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/[variant_id]/images/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/[variant_id]/inventory-items": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/[variant_id]/inventory-items/[inventory_item_id]": {
+    "POST": "catalog.manage",
+    "DELETE": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/[id]/variants/inventory-items/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/batch": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/export": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/import": {},
+  "/admin/products/import/[transaction_id]/confirm": {},
+  "/admin/products/imports": {
+    "POST": "catalog.manage"
+  },
+  "/admin/products/imports/[transaction_id]/confirm": {
+    "POST": "catalog.manage"
+  },
+  "/admin/promotions": {
+    "GET": "marketing.read",
+    "POST": "marketing.manage"
+  },
+  "/admin/promotions/[id]": {
+    "GET": "marketing.read",
+    "POST": "marketing.manage",
+    "DELETE": "marketing.manage"
+  },
+  "/admin/promotions/[id]/[rule_type]": {
+    "GET": "marketing.read"
+  },
+  "/admin/promotions/[id]/buy-rules/batch": {
+    "POST": "marketing.manage"
+  },
+  "/admin/promotions/[id]/rules/batch": {
+    "POST": "marketing.manage"
+  },
+  "/admin/promotions/[id]/target-rules/batch": {
+    "POST": "marketing.manage"
+  },
+  "/admin/promotions/rule-attribute-options/[rule_type]": {
+    "GET": "marketing.read"
+  },
+  "/admin/promotions/rule-value-options/[rule_type]/[rule_attribute_id]": {
+    "GET": "marketing.read"
+  },
+  "/admin/property-labels": {},
+  "/admin/property-labels/[id]": {},
+  "/admin/property-labels/batch": {},
+  "/admin/rbac/me/permissions": {},
+  "/admin/rbac/policies": {},
+  "/admin/rbac/policies/[id]": {},
+  "/admin/rbac/policies/[id]/roles": {},
+  "/admin/rbac/policies/assignable": {},
+  "/admin/rbac/roles": {},
+  "/admin/rbac/roles/[id]": {},
+  "/admin/rbac/roles/[id]/policies": {},
+  "/admin/rbac/roles/[id]/policies/[policy_id]": {},
+  "/admin/rbac/roles/[id]/users": {},
+  "/admin/rbac/roles/assignable": {},
+  "/admin/refund-reasons": {
+    "GET": "reference"
+  },
+  "/admin/refund-reasons/[id]": {
+    "GET": "reference"
+  },
+  "/admin/regions": {
+    "GET": "reference"
+  },
+  "/admin/regions/[id]": {
+    "GET": "reference"
+  },
+  "/admin/reservations": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage"
+  },
+  "/admin/reservations/[id]": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage",
+    "DELETE": "inventory.manage"
+  },
+  "/admin/return-reasons": {
+    "GET": "reference"
+  },
+  "/admin/return-reasons/[id]": {
+    "GET": "reference"
+  },
+  "/admin/returns": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]": {
+    "GET": "orders.read",
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/cancel": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/dismiss-items": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/dismiss-items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/returns/[id]/receive": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/returns/[id]/receive-items": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/receive-items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/returns/[id]/receive/confirm": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/request": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/returns/[id]/request-items": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/request-items/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/returns/[id]/shipping-method": {
+    "POST": "orders.manage"
+  },
+  "/admin/returns/[id]/shipping-method/[action_id]": {
+    "POST": "orders.manage",
+    "DELETE": "orders.manage"
+  },
+  "/admin/sales-channels": {
+    "GET": "reference"
+  },
+  "/admin/sales-channels/[id]": {
+    "GET": "reference"
+  },
+  "/admin/sales-channels/[id]/products": {},
+  "/admin/search": {},
+  "/admin/shipping-option-types": {
+    "GET": "reference"
+  },
+  "/admin/shipping-option-types/[id]": {
+    "GET": "reference"
+  },
+  "/admin/shipping-options": {
+    "GET": "reference"
+  },
+  "/admin/shipping-options/[id]": {
+    "GET": "reference"
+  },
+  "/admin/shipping-options/[id]/rules/batch": {},
+  "/admin/shipping-profiles": {
+    "GET": "reference"
+  },
+  "/admin/shipping-profiles/[id]": {
+    "GET": "reference"
+  },
+  "/admin/stock-locations": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage"
+  },
+  "/admin/stock-locations/[id]": {
+    "GET": "inventory.read",
+    "POST": "inventory.manage",
+    "DELETE": "inventory.manage"
+  },
+  "/admin/stock-locations/[id]/fulfillment-providers": {
+    "POST": "inventory.manage"
+  },
+  "/admin/stock-locations/[id]/fulfillment-sets": {
+    "POST": "inventory.manage"
+  },
+  "/admin/stock-locations/[id]/sales-channels": {
+    "POST": "inventory.manage"
+  },
+  "/admin/stores": {},
+  "/admin/stores/[id]": {},
+  "/admin/tax-providers": {
+    "GET": "reference"
+  },
+  "/admin/tax-rates": {
+    "GET": "reference"
+  },
+  "/admin/tax-rates/[id]": {
+    "GET": "reference"
+  },
+  "/admin/tax-rates/[id]/rules": {},
+  "/admin/tax-rates/[id]/rules/[rule_id]": {},
+  "/admin/tax-regions": {
+    "GET": "reference"
+  },
+  "/admin/tax-regions/[id]": {
+    "GET": "reference"
+  },
+  "/admin/translations": {},
+  "/admin/translations/batch": {},
+  "/admin/translations/entities": {},
+  "/admin/translations/settings": {},
+  "/admin/translations/settings/batch": {},
+  "/admin/translations/statistics": {},
+  "/admin/uploads": {
+    "POST": "upload"
+  },
+  "/admin/uploads/[id]": {},
+  "/admin/uploads/presigned-urls": {},
+  "/admin/users": {},
+  "/admin/users/[id]": {},
+  "/admin/users/[id]/roles": {},
+  "/admin/users/[id]/roles/[role_id]": {},
+  "/admin/users/me": {},
+  "/admin/views/[entity]/columns": {},
+  "/admin/views/[entity]/configurations": {},
+  "/admin/views/[entity]/configurations/[id]": {},
+  "/admin/views/[entity]/configurations/active": {},
+  "/admin/views/entities": {},
+  "/admin/workflows-executions": {},
+  "/admin/workflows-executions/[id]": {},
+  "/admin/workflows-executions/[workflow_id]/[transaction_id]": {},
+  "/admin/workflows-executions/[workflow_id]/[transaction_id]/subscribe": {},
+  "/admin/workflows-executions/[workflow_id]/run": {},
+  "/admin/workflows-executions/[workflow_id]/steps/failure": {},
+  "/admin/workflows-executions/[workflow_id]/steps/success": {},
+  "/admin/workflows-executions/[workflow_id]/subscribe": {}
+}
