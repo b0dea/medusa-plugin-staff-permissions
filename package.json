@@ -1,6 +1,6 @@
 {
   "name": "@hollowpoint-io/medusa-plugin-staff-permissions",
-  "version": "0.1.0",
+  "version": "0.1.0-lola.1",
   "description": "Server-enforced staff permissions for Medusa v2 — eight business areas, View/Manage grants, immutable recovery owners, atomic audit trail, fail-closed route inventory.",
   "author": "Billy Mahmood <https://hollowpoint.io>",
   "license": "MIT",

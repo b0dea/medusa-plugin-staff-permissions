@@ -6,7 +6,13 @@ import { getStaffAccess } from "./access"
 import { hasStaffPermission, normalizeAdminPath } from "./policy"
 
 export async function enforceStaffAccess(req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) {
-  const deny = () => { throw new MedusaError(MedusaError.Types.FORBIDDEN, "You do not have permission to perform this action. Ask an administrator to update your staff permissions.") }
+  const deny = (missingPermission?: string) => {
+    throw new MedusaError(
+      MedusaError.Types.FORBIDDEN,
+      "You do not have permission to perform this action. Ask an administrator to update your staff permissions.",
+      missingPermission ? `missing_staff_permission:${missingPermission}` : undefined,
+    )
+  }
   const path = normalizeAdminPath(req.originalUrl)
   if (!path) return deny()
   if (path === "/admin/invites/accept" && req.method === "POST") return next()
@@ -45,8 +51,8 @@ export async function enforceStaffAccess(req: MedusaRequest, res: MedusaResponse
   }
   if (permission === "reference") {
     if (!access.permissions.some((grant) => /\.(read|manage)$/.test(grant))) return deny()
-  } else if (!hasStaffPermission(access, permission)) return deny()
-  if (permission.startsWith("fulfillment.") && !hasStaffPermission(access, "orders.read")) return deny()
+  } else if (!hasStaffPermission(access, permission)) return deny(permission)
+  if (permission.startsWith("fulfillment.") && !hasStaffPermission(access, "orders.read")) return deny("orders.read")
   if (!policy.staffFieldsAllowed(req.query.fields, access, permission)) return deny()
   return next()
 }

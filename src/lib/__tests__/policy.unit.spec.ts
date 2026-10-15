@@ -317,6 +317,29 @@ describe("staff relation policy", () => {
 })
 
 describe("enforceStaffAccess", () => {
+  it("names the missing permission when a refund is denied", async () => {
+    const ctx = gate({
+      originalUrl: "/admin/payments/pay_example/refund",
+      method: "POST",
+      auth_context: userAuth,
+      access: { permissions: ["orders.read"] },
+    })
+
+    await expect(enforceStaffAccess(ctx.request, ctx.response, ctx.next)).rejects.toMatchObject({
+      type: MedusaError.Types.FORBIDDEN,
+      code: "missing_staff_permission:orders.manage",
+      message: expect.stringMatching(/You do not have permission/),
+    })
+    expect(ctx.next).not.toHaveBeenCalled()
+
+    await expectNext(gate({
+      originalUrl: "/admin/payments/pay_example/refund",
+      method: "POST",
+      auth_context: userAuth,
+      access: { permissions: ["orders.manage"] },
+    }))
+  })
+
   it("rejects unauthenticated admin requests as forbidden", async () => {
     const ctx = gate({ originalUrl: "/admin/products" })
     await expectForbidden(ctx)
