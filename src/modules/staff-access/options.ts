@@ -3,6 +3,7 @@ import { PERMISSION_CATALOGUE, PERMISSION_IDS } from "../../lib/policy"
 
 export type StaffPermissionsOptions = {
   owner_user_ids?: string[]
+  api_key_policy_service?: string
   routes?: Record<string, Record<string, string> | Record<string, never>>
   relations?: Record<string, string>
   fields?: string[]
@@ -10,6 +11,7 @@ export type StaffPermissionsOptions = {
 
 export type ResolvedStaffPermissionsOptions = {
   owner_user_ids: string[]
+  api_key_policy_service?: string
   routes: Record<string, Record<string, string>>
   relations: Record<string, string>
   fields: string[]
@@ -44,6 +46,16 @@ function resolveOwnerUserIds(raw: Record<string, unknown>, env: NodeJS.ProcessEn
     invalidData("owner_user_ids must be an array of non-empty strings")
   }
   return option as string[]
+}
+
+function resolveApiKeyPolicyService(value: unknown): string | undefined {
+  if (value == null) {
+    return undefined
+  }
+  if (typeof value !== "string" || value.trim().length === 0) {
+    invalidData("api_key_policy_service must be a non-empty string")
+  }
+  return value
 }
 
 function resolveRoutes(value: unknown): Record<string, Record<string, string>> {
@@ -115,6 +127,7 @@ export function resolveOptions(raw: unknown, env: NodeJS.ProcessEnv): ResolvedSt
   }
   return {
     owner_user_ids: resolveOwnerUserIds(raw, env),
+    api_key_policy_service: resolveApiKeyPolicyService(raw.api_key_policy_service),
     routes: resolveRoutes(raw.routes),
     relations: resolveRelations(raw.relations),
     fields: resolveFields(raw.fields),

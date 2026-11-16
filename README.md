@@ -18,6 +18,9 @@ module.exports = defineConfig({
         // Exact existing Medusa user ids. Immutable recovery owners.
         // Optional if STAFF_OWNER_USER_IDS is set. Option wins.
         owner_user_ids: ["user_01J..."],
+        // Optional trusted DI service for separately authorized Admin secret keys.
+        // Omit to keep rejecting every secret API key.
+        api_key_policy_service: "adminApiKeyPolicy",
         // Host extension routes. Same shape as the core inventory.
         // Overrides core entries with the same path. `{}` = administrator-only.
         routes: {
@@ -50,7 +53,7 @@ Built and tested against Medusa `>=2.17 <3`. The core route inventory is pinned 
 4. Verify the owner can open `/app/staff-permissions`. Assign each approved staff account its permissions. In a second browser session, prove an allowed action succeeds and a prohibited action returns 403. Verify owner editing/deletion fails and another owner's login works if configured.
 5. For recovery, a trusted deployment operator changes the runtime owner IDs to another verified existing account and restarts all backend instances. Do not remove the last usable recovery owner before verifying its replacement.
 
-User metadata and JWT claims never grant permissions. Secret API keys are rejected by this staff gate; existing integrations using Admin secret keys must be inventoried before activation and given a separately reviewed integration access design. Storefront publishable keys and vendor callbacks outside `/admin` are unaffected.
+User metadata and JWT claims never grant permissions. Secret API keys are rejected by default; existing integrations using Admin secret keys must be inventoried before activation and given a separately reviewed integration access design. Storefront publishable keys and vendor callbacks outside `/admin` are unaffected.
 
 ## Permission model
 
@@ -83,7 +86,9 @@ Medusa registers global middlewares core → plugins → app, so this plugin's `
 
 Documented at https://docs.medusajs.com/learn/fundamentals/api-routes/middlewares#how-are-middlewares-ordered-and-applied.
 
-The gate fails closed. Unknown routes are denied to everyone except administrators. An inventory entry of `{}` is administrator-only. Unauthenticated requests and non-`user` actors — including Admin secret API keys — are rejected. Disabled accounts are denied even with a previously valid session or an administrator flag. `Cache-Control: no-store` is set on gated responses. The database is authoritative on every request; there is no permission cache. User metadata and JWT claims never grant permissions. The native sidebar remains visible; attempting an unauthorized action returns 403, including direct API requests.
+The gate fails closed. Unknown routes are denied to everyone except administrators. An inventory entry of `{}` is administrator-only. Unauthenticated requests and non-`user` actors are rejected. Admin secret API keys are rejected unless `api_key_policy_service` names a trusted service registered in Medusa's dependency-injection container. Disabled accounts are denied even with a previously valid session or an administrator flag. `Cache-Control: no-store` is set on gated responses. The database is authoritative on every request; there is no permission cache. User metadata and JWT claims never grant permissions. The native sidebar remains visible; attempting an unauthorized action returns 403, including direct API requests.
+
+For an authenticated request whose `auth_context.actor_type` is `api-key` and whose `actor_id` is non-empty, the configured service receives `authorizeAdminRequest(req, res)`. It must return exactly `true` to continue to the existing Admin handler. Any other return value is denied; if the service already sent a response, the gate returns without sending another one. Resolution errors and exceptions are not converted to human staff access or ignored; an application can throw a typed Medusa error to preserve its own denial reason. The service owns the API key's operation grants, input/output bounds, audit and replay policy. This hook does not authenticate keys, impersonate a user, or bypass Medusa's native Admin authentication and route middleware.
 
 Reserved static entries take precedence over ID patterns. `[id]` and `*_id]` segments match Medusa-generated IDs with prefixes and underscores (`^[a-z][a-z0-9]*_[a-z0-9_-]+$`); other bracket segments match one path segment. Custom IDs outside that format need an explicit reviewed rule. `HEAD` is evaluated as `GET`. `PUT` / `PATCH` never match.
 
@@ -101,6 +106,7 @@ Other specials: `"upload"` requires `catalog.manage` or `content.manage`; `"refe
 The package ships a core inventory of native Medusa 2.19 admin routes. Host extension routes, extra relations, and extra scalar fields are supplied via plugin options. New endpoints never inherit grants — add a plugin or a host `src/api/admin` route and the gate denies it until you map it.
 
 - `options.routes` — path template → method map (`GET` / `POST` / `DELETE` → a known permission id, `"upload"`, or `"reference"`). `{}` is administrator-only. Host keys override core keys wholesale. Keys must start with `/admin/`.
+- `options.api_key_policy_service` — optional non-empty DI registration name. The resolved service must implement `authorizeAdminRequest(req, res)` and return exactly `true` to admit a natively authenticated Admin secret key. Omit it to deny all secret keys.
 - `options.relations` — extra `?fields=` relation names mapped to a group id, `"reference"` (any read grant), or `"context"` (always allowed). Unknown relations and fields are denied.
 - `options.fields` — extra scalar field names allowed in `?fields=` (`^[a-z_][a-z0-9_]*$`).
 

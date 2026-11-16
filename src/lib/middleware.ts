@@ -5,6 +5,10 @@ import type StaffAccessModuleService from "../modules/staff-access/service"
 import { getStaffAccess } from "./access"
 import { hasStaffPermission, normalizeAdminPath } from "./policy"
 
+export type AdminApiKeyPolicyService = {
+  authorizeAdminRequest(req: MedusaRequest, res: MedusaResponse): Promise<unknown> | unknown
+}
+
 export async function enforceStaffAccess(req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) {
   const deny = (missingPermission?: string) => {
     throw new MedusaError(
@@ -15,9 +19,21 @@ export async function enforceStaffAccess(req: MedusaRequest, res: MedusaResponse
   }
   const path = normalizeAdminPath(req.originalUrl)
   if (!path) return deny()
+  const authentication = (req as AuthenticatedMedusaRequest).auth_context
+  if (authentication?.actor_type === "api-key" && authentication.actor_id) {
+    res.setHeader("Cache-Control", "no-store")
+    const staffAccessService = req.scope.resolve<StaffAccessModuleService>(STAFF_ACCESS_MODULE)
+    const policyServiceName = staffAccessService.getOptions().api_key_policy_service
+    if (!policyServiceName) return deny()
+    const policyService = req.scope.resolve<AdminApiKeyPolicyService>(policyServiceName)
+    if (await policyService.authorizeAdminRequest(req, res) !== true) {
+      if (res.headersSent) return
+      return deny()
+    }
+    return next()
+  }
   if (path === "/admin/invites/accept" && req.method === "POST") return next()
   if (path === "/admin/feature-flags" && ["GET", "HEAD"].includes(req.method) && Object.keys(req.query).length === 0) return next()
-  const authentication = (req as AuthenticatedMedusaRequest).auth_context
   if (authentication?.actor_type !== "user" || !authentication.actor_id) return deny()
   const access = await getStaffAccess(req.scope, authentication.actor_id)
   res.setHeader("Cache-Control", "no-store")
