@@ -54,6 +54,9 @@ function gate(input: {
   access?: Partial<AccessStub>
   isOwner?: boolean | ((userId: string) => boolean)
   stores?: unknown[]
+  apiKeyPolicyService?: string
+  authorizeAdminRequest?: jest.Mock
+  headersSent?: boolean
 }) {
   const access: AccessStub = {
     user_id: "user_staff",
@@ -70,6 +73,10 @@ function gate(input: {
     typeof input.isOwner === "function" ? input.isOwner : () => input.isOwner === true,
   )
   const getPolicy = jest.fn().mockReturnValue(policy)
+  const getOptions = jest.fn().mockReturnValue({
+    ...resolved,
+    api_key_policy_service: input.apiKeyPolicyService,
+  })
   const next = jest.fn()
   const setHeader = jest.fn()
   const json = jest.fn()
@@ -80,14 +87,17 @@ function gate(input: {
     query: input.query ?? {},
     scope: {
       resolve: (key: string) => {
-        if (key === STAFF_ACCESS_MODULE) return { isOwner, getPolicy }
+        if (key === STAFF_ACCESS_MODULE) return { isOwner, getPolicy, getOptions }
         if (key === ContainerRegistrationKeys.QUERY) return { graph }
+        if (key === input.apiKeyPolicyService && input.authorizeAdminRequest) {
+          return { authorizeAdminRequest: input.authorizeAdminRequest }
+        }
         throw new Error(`unexpected resolve ${String(key)}`)
       },
     },
   } as unknown as MedusaRequest
-  const response = { setHeader, json } as unknown as MedusaResponse
-  return { request, response, next, graph, isOwner, getPolicy, setHeader, json }
+  const response = { setHeader, json, headersSent: input.headersSent ?? false } as unknown as MedusaResponse
+  return { request, response, next, graph, isOwner, getPolicy, getOptions, setHeader, json }
 }
 
 const userAuth = { actor_type: "user", actor_id: "user_staff" }
@@ -353,6 +363,110 @@ describe("enforceStaffAccess", () => {
     })
     await expectForbidden(ctx)
     expect(getStaffAccess).not.toHaveBeenCalled()
+    expect(ctx.setHeader).toHaveBeenCalledWith("Cache-Control", "no-store")
+  })
+
+  it("lets a configured API key policy authorize a native authenticated request", async () => {
+    const authorizeAdminRequest = jest.fn().mockResolvedValue(true)
+    const ctx = gate({
+      originalUrl: "/admin/products",
+      auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+      apiKeyPolicyService: "adminApiKeyPolicy",
+      authorizeAdminRequest,
+    })
+
+    await expectNext(ctx)
+    expect(authorizeAdminRequest).toHaveBeenCalledWith(ctx.request, ctx.response)
+    expect(ctx.setHeader).toHaveBeenCalledWith("Cache-Control", "no-store")
+    expect(getStaffAccess).not.toHaveBeenCalled()
+  })
+
+  it.each([false, undefined, null, 1, "true", {}])(
+    "denies an API key when its configured policy returns %j",
+    async (result) => {
+      const authorizeAdminRequest = jest.fn().mockResolvedValue(result)
+      const ctx = gate({
+        originalUrl: "/admin/products",
+        auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+        apiKeyPolicyService: "adminApiKeyPolicy",
+        authorizeAdminRequest,
+      })
+
+      await expectForbidden(ctx)
+      expect(authorizeAdminRequest).toHaveBeenCalledTimes(1)
+    },
+  )
+
+  it("does not throw another denial after the API key policy sends its response", async () => {
+    const authorizeAdminRequest = jest.fn().mockResolvedValue(false)
+    const ctx = gate({
+      originalUrl: "/admin/products",
+      auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+      apiKeyPolicyService: "adminApiKeyPolicy",
+      authorizeAdminRequest,
+      headersSent: true,
+    })
+
+    await expect(enforceStaffAccess(ctx.request, ctx.response, ctx.next)).resolves.toBeUndefined()
+    expect(ctx.next).not.toHaveBeenCalled()
+  })
+
+  it("does not fall back when the configured API key policy service is missing", async () => {
+    const ctx = gate({
+      originalUrl: "/admin/products",
+      auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+      apiKeyPolicyService: "missingAgentPolicy",
+    })
+
+    await expect(enforceStaffAccess(ctx.request, ctx.response, ctx.next)).rejects.toThrow(
+      "unexpected resolve missingAgentPolicy",
+    )
+    expect(ctx.next).not.toHaveBeenCalled()
+  })
+
+  it("bubbles API key policy denials and failures", async () => {
+    const denial = new MedusaError(MedusaError.Types.FORBIDDEN, "Agent operation is not granted")
+    const authorizeAdminRequest = jest.fn().mockRejectedValue(denial)
+    const ctx = gate({
+      originalUrl: "/admin/products",
+      auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+      apiKeyPolicyService: "adminApiKeyPolicy",
+      authorizeAdminRequest,
+    })
+
+    await expect(enforceStaffAccess(ctx.request, ctx.response, ctx.next)).rejects.toBe(denial)
+    expect(ctx.next).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    { actor_type: "api-key" },
+    { actor_type: "api-key", actor_id: "" },
+    { actor_type: "service", actor_id: "service_agent" },
+    { actor_type: "unknown", actor_id: "actor_unknown" },
+  ])("does not invoke the API key policy for malformed or non-API-key actor %j", async (auth_context) => {
+    const authorizeAdminRequest = jest.fn().mockResolvedValue(true)
+    const ctx = gate({
+      originalUrl: "/admin/products",
+      auth_context,
+      apiKeyPolicyService: "adminApiKeyPolicy",
+      authorizeAdminRequest,
+    })
+
+    await expectForbidden(ctx)
+    expect(authorizeAdminRequest).not.toHaveBeenCalled()
+  })
+
+  it("rejects an ambiguous path before invoking the API key policy", async () => {
+    const authorizeAdminRequest = jest.fn().mockResolvedValue(true)
+    const ctx = gate({
+      originalUrl: "/admin/products/../users",
+      auth_context: { actor_type: "api-key", actor_id: "apk_agent" },
+      apiKeyPolicyService: "adminApiKeyPolicy",
+      authorizeAdminRequest,
+    })
+
+    await expectForbidden(ctx)
+    expect(authorizeAdminRequest).not.toHaveBeenCalled()
   })
 
   it("rejects disabled staff even when an administrator flag is present", async () => {

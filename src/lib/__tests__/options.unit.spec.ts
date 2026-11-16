@@ -20,6 +20,23 @@ describe("resolveOptions", () => {
     expect(resolveOptions({}, {}).owner_user_ids).toEqual([])
   })
 
+  it("leaves API key policy disabled when no service is configured", () => {
+    expect(resolveOptions({}, {}).api_key_policy_service).toBeUndefined()
+  })
+
+  it("accepts a non-empty API key policy service registration name", () => {
+    expect(
+      resolveOptions({ api_key_policy_service: "adminApiKeyPolicy" }, {}).api_key_policy_service
+    ).toBe("adminApiKeyPolicy")
+  })
+
+  it.each(["", " ", 123, {}, []])("rejects invalid API key policy service %j", (value) => {
+    expect(() => resolveOptions({ api_key_policy_service: value }, {})).toThrow(expect.objectContaining({
+      type: "invalid_data",
+      message: expect.stringMatching(/api_key_policy_service/),
+    }))
+  })
+
   it("rejects a route key that does not start with /admin/", () => {
     expect(() =>
       resolveOptions({ routes: { "/store/products": { GET: "catalog.read" } } }, {})
